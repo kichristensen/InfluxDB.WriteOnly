@@ -3,7 +3,7 @@ using System.Text;
 
 namespace InfluxWriteOnly {
     public static class PointFormatter {
-        public static void Append(StringBuilder sb, Point point) {
+        public static void Append(StringBuilder sb, Point point, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
             sb.Append(point.Measurement);
             if (point.Tags.Any()) {
                 sb.Append($",{string.Join(",", point.Tags)}");
@@ -12,7 +12,7 @@ namespace InfluxWriteOnly {
             sb.Append($" {string.Join(",", point.Fields)}");
 
             if (point.Timestamp.HasValue) {
-                sb.AppendLine($" {point.Timestamp.Value.ToUnixTime()}");
+                sb.Append($" {point.Timestamp.Value.ToUnixTime(precision)}\n");
             }
         }
 

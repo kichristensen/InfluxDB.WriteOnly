@@ -8,15 +8,17 @@ using System.Web;
 
 namespace InfluxWriteOnly {
     public class InfluxDbClient {
+        private readonly TimeUnitPrecision precision;
         private readonly bool throwOnException;
         private readonly Uri endpoint;
         private readonly HttpClient httpClient = new HttpClient();
 
-        public InfluxDbClient(Uri endpoint, string username = null, string password = null, bool throwOnException = false) {
+        public InfluxDbClient(Uri endpoint, string username = null, string password = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond, bool throwOnException = false) {
             if (username != null && password == null || username == null && password != null) {
                 throw new ArgumentException("When username or password is defined, both must be defined");
             }
 
+            this.precision = precision;
             this.throwOnException = throwOnException;
             this.endpoint = new Uri(endpoint, "write");
             if (username != null) {
@@ -28,7 +30,7 @@ namespace InfluxWriteOnly {
         public async Task WriteAsync(string retentionPolicy, string dbName, IEnumerable<Point> points) {
             try {
                 var uri = $"{endpoint}?{CreateQueryString(dbName, retentionPolicy)}";
-                var formatPoints = points.FormatPoints();
+                var formatPoints = points.FormatPoints(precision);
                 var response = await httpClient.PostAsync(uri, new StringContent(formatPoints));
                 response.EnsureSuccessStatusCode();
             } catch (Exception) when (!throwOnException) {
@@ -40,12 +42,13 @@ namespace InfluxWriteOnly {
             await WriteAsync(null, dbName, points);
         }
 
-        private static string CreateQueryString(string dbName, string retentionPolicy = null) {
+        private static string CreateQueryString(string dbName, string retentionPolicy = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             if (retentionPolicy != null) {
                 queryString.Add("rp", retentionPolicy);
             }
 
+            queryString.Add("precision", precision.ToPrecisionString());
             queryString.Add("db", dbName);
             return queryString.ToString();
         }
