@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -33,8 +34,8 @@ namespace InfluxWriteOnly {
                 var formatPoints = points.FormatPoints(precision);
                 var response = await httpClient.PostAsync(uri, new StringContent(formatPoints));
                 response.EnsureSuccessStatusCode();
-            } catch (Exception) when (!throwOnException) {
-                // ignored
+            } catch (Exception e) when (!throwOnException) {
+                Debug.WriteLine("Exception occured while written to InfluxDB:\n{0}", e);
             }
         }
 
