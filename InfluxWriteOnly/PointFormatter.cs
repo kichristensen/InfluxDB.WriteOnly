@@ -4,7 +4,7 @@ using System.Text;
 namespace InfluxWriteOnly {
     public static class PointFormatter {
         public static void Append(StringBuilder sb, Point point, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
-            sb.Append(point.Measurement);
+            sb.Append(Escape(point.Measurement));
             if (point.Tags.Any()) {
                 sb.Append($",{string.Join(",", point.Tags)}");
             }
