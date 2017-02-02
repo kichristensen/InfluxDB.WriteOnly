@@ -1,7 +1,8 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace InfluxWriteOnly {
-    public class Field {
+    public class Field : IEquatable<Field> {
         public string Key { get; }
         public object Value { get; }
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
@@ -40,6 +41,23 @@ namespace InfluxWriteOnly {
             }
 
             return string.Format(Culture, "{0}={1}", PointFormatter.Escape(Key), (bool)Value ? "t" : "f");
+        }
+
+        public bool Equals(Field other) {
+            return string.Equals(Key, other.Key) && Equals(Value, other.Value);
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Field)obj);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return ((Key?.GetHashCode() ?? 0) * 397) ^ (Value?.GetHashCode() ?? 0);
+            }
         }
     }
 }
