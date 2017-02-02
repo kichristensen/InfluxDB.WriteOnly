@@ -1,15 +1,15 @@
 ﻿namespace InfluxWriteOnly {
     public class Tag {
-        private readonly string key;
-        private readonly string value;
+        public string Key { get; }
+        public string Value { get; }
 
         public Tag(string key, string value) {
-            this.key = key;
-            this.value = value;
+            this.Key = key;
+            this.Value = value;
         }
 
         public override string ToString() {
-            return $"{PointFormatter.Escape(key)}={PointFormatter.Escape(value)}";
+            return $"{PointFormatter.Escape(Key)}={PointFormatter.Escape(Value)}";
         }
     }
 }
