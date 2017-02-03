@@ -8,7 +8,13 @@ using System.Threading.Tasks;
 using System.Web;
 
 namespace InfluxDB.WriteOnly {
-    public class InfluxDbClient {
+    public interface IInfluxDbClient {
+        Task WriteAsync(string retentionPolicy, string dbName, IEnumerable<Point> points);
+
+        Task WriteAsync(string dbName, IEnumerable<Point> points);
+    }
+
+    public class InfluxDbClient : IInfluxDbClient {
         private readonly TimeUnitPrecision precision;
         private readonly bool throwOnException;
         private readonly Uri endpoint;
