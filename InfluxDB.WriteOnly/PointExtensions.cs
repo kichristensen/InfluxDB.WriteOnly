@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public static class PointExtensions {
         public static string FormatPoints(this IEnumerable<Point> points, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
             var sb = new StringBuilder();

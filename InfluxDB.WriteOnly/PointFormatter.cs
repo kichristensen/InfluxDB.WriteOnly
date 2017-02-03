@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public static class PointFormatter {
         public static void Append(StringBuilder sb, Point point, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
             sb.Append(Escape(point.Measurement));

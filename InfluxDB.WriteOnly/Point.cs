@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public class Point {
         public string Measurement { get; set; }
         public IEnumerable<Tag> Tags { get; set; }

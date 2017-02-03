@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public class Tag : IEquatable<Tag> {
         public string Key { get; }
         public string Value { get; }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public class InfluxDbClient {
         private readonly TimeUnitPrecision precision;
         private readonly bool throwOnException;

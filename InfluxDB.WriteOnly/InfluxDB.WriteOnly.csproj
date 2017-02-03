@@ -7,8 +7,8 @@
     <ProjectGuid>{C6CC7436-6524-49E7-887B-4B91816E4F18}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfluxWriteOnly</RootNamespace>
-    <AssemblyName>InfluxWriteOnly</AssemblyName>
+    <RootNamespace>InfluxDB.WriteOnly</RootNamespace>
+    <AssemblyName>InfluxDB.WriteOnly</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

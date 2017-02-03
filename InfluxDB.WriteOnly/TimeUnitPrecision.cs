@@ -1,6 +1,6 @@
 using System;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public enum TimeUnitPrecision {
         Millisecond,
         Second,

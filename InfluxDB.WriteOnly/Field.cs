@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace InfluxWriteOnly {
+namespace InfluxDB.WriteOnly {
     public class Field : IEquatable<Field> {
         public string Key { get; }
         public object Value { get; }
