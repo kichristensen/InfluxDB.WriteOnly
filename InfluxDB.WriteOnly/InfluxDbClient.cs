@@ -40,7 +40,7 @@ namespace InfluxDB.WriteOnly {
                 var formatPoints = points.FormatPoints(precision);
                 var response = await httpClient.PostAsync(uri, new StringContent(formatPoints));
                 response.EnsureSuccessStatusCode();
-            } catch (Exception e) when (!throwOnException) {
+            } catch (Exception e) when (!throwOnException) { 
                 Debug.WriteLine("Exception occured while written to InfluxDB:\n{0}", e);
             }
         }
@@ -50,15 +50,16 @@ namespace InfluxDB.WriteOnly {
         }
 
         private static UriBuilder CreateQueryString(UriBuilder endpoint, string dbName, string retentionPolicy = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
-            var queryString = HttpUtility.ParseQueryString(endpoint.Query);
+            var updatedEndpoint = new UriBuilder(endpoint.Uri);
+            var queryString = HttpUtility.ParseQueryString(updatedEndpoint.Query);
             if (retentionPolicy != null) {
                 queryString.Add("rp", retentionPolicy);
             }
 
             queryString.Add("precision", precision.ToPrecisionString());
             queryString.Add("db", dbName);
-            endpoint.Query = queryString.ToString();
-            return endpoint;
+            updatedEndpoint.Query = queryString.ToString();
+            return updatedEndpoint;
         }
     }
 }
