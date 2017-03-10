@@ -15,6 +15,8 @@ namespace InfluxDB.WriteOnly {
     }
 
     public class InfluxDbClient : IInfluxDbClient {
+        private readonly string username;
+        private readonly string password;
         private readonly TimeUnitPrecision precision;
         private readonly bool throwOnException;
         private readonly UriBuilder endpoint;
@@ -25,18 +27,16 @@ namespace InfluxDB.WriteOnly {
                 throw new ArgumentException("When username or password is defined, both must be defined");
             }
 
+            this.username = username;
+            this.password = password;
             this.precision = precision;
             this.throwOnException = throwOnException;
             this.endpoint = new UriBuilder(new Uri(endpoint, "write")) { Query = endpoint.Query.TrimStart('?') };
-            if (username != null) {
-                var byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-            }
         }
 
         public async Task WriteAsync(string retentionPolicy, string dbName, IEnumerable<Point> points) {
             try {
-                var uri = CreateQueryString(endpoint, dbName, retentionPolicy).Uri;
+                var uri = CreateQueryString(endpoint, username, password, dbName, retentionPolicy).Uri;
                 var formatPoints = points.FormatPoints(precision);
                 var response = await httpClient.PostAsync(uri, new StringContent(formatPoints));
                 response.EnsureSuccessStatusCode();
@@ -49,7 +49,7 @@ namespace InfluxDB.WriteOnly {
             await WriteAsync(null, dbName, points);
         }
 
-        private static UriBuilder CreateQueryString(UriBuilder endpoint, string dbName, string retentionPolicy = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
+        private static UriBuilder CreateQueryString(UriBuilder endpoint, string username, string password, string dbName, string retentionPolicy = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
             var updatedEndpoint = new UriBuilder(endpoint.Uri);
             var queryString = HttpUtility.ParseQueryString(updatedEndpoint.Query);
             if (retentionPolicy != null) {
@@ -58,6 +58,8 @@ namespace InfluxDB.WriteOnly {
 
             queryString.Add("precision", precision.ToPrecisionString());
             queryString.Add("db", dbName);
+            queryString.Add("u", username);
+            queryString.Add("p", password);
             updatedEndpoint.Query = queryString.ToString();
             return updatedEndpoint;
         }
