@@ -45,13 +45,14 @@ namespace InfluxDB.WriteOnly {
                 using (var stream = new StreamWriter(request.GetRequestStream())) {
                     stream.Write(formatPoints);
                 }
-                var response = (HttpWebResponse)await request.GetResponseAsync();
-                if (response.StatusCode != HttpStatusCode.NoContent) {
-                    string content;
-                    using (var stream = new StreamReader(response.GetResponseStream())) {
-                        content = await stream.ReadToEndAsync();
+                using (var response = (HttpWebResponse)await request.GetResponseAsync()) {
+                    if (response.StatusCode != HttpStatusCode.NoContent) {
+                        string content;
+                        using (var stream = new StreamReader(response.GetResponseStream())) {
+                            content = await stream.ReadToEndAsync();
+                        }
+                        throw new HttpRequestException($"Got status code {response.StatusCode} with content:\r\n{content}");
                     }
-                    throw new HttpRequestException($"Got status code {response.StatusCode} with content:\r\n{content}");
                 }
             } catch (Exception e) when (!throwOnException) { 
                 Debug.WriteLine("Exception occured while written to InfluxDB:\n{0}", e);
