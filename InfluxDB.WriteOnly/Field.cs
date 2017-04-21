@@ -37,7 +37,7 @@ namespace InfluxDB.WriteOnly {
             }
 
             if (Value is string) {
-                return string.Format(Culture, "{0}={1}", PointFormatter.Escape(Key), PointFormatter.Escape(Value.ToString()));
+                return string.Format(Culture, "{0}=\"{1}\"", PointFormatter.Escape(Key), PointFormatter.Escape(Value.ToString()));
             }
 
             return string.Format(Culture, "{0}={1}", PointFormatter.Escape(Key), (bool)Value ? "t" : "f");
