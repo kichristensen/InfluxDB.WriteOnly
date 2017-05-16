@@ -45,11 +45,11 @@ namespace InfluxDB.WriteOnly {
                 using (var stream = new StreamWriter(request.GetRequestStream())) {
                     stream.Write(formatPoints);
                 }
-                using (var response = (HttpWebResponse)await request.GetResponseAsync()) {
+                using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false)) {
                     if (response.StatusCode != HttpStatusCode.NoContent) {
                         string content;
                         using (var stream = new StreamReader(response.GetResponseStream())) {
-                            content = await stream.ReadToEndAsync();
+                            content = await stream.ReadToEndAsync().ConfigureAwait(false);
                         }
                         throw new HttpRequestException($"Got status code {response.StatusCode} with content:\r\n{content}");
                     }
@@ -60,7 +60,7 @@ namespace InfluxDB.WriteOnly {
         }
 
         public async Task WriteAsync(string dbName, IEnumerable<Point> points) {
-            await WriteAsync(null, dbName, points);
+            await WriteAsync(null, dbName, points).ConfigureAwait(false);
         }
 
         private static UriBuilder CreateQueryString(UriBuilder endpoint, string username, string password, string dbName, string retentionPolicy = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
