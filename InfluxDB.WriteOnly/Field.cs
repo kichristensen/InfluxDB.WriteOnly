@@ -27,12 +27,18 @@ namespace InfluxDB.WriteOnly {
             this.Value = value;
         }
 
+        public Field(string key, long value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
         public override string ToString() {
             if (Value is float) {
                 return string.Format(Culture, "{0}={1}", PointFormatter.Escape(Key), Value);
             }
 
-            if (Value is int) {
+            if (Value is int || Value is long) {
                 return string.Format(Culture, "{0}={1}i", PointFormatter.Escape(Key), Value);
             }
 
