@@ -46,8 +46,10 @@ namespace InfluxDB.WriteOnly {
                         throw new HttpRequestException($"Got status code {response.StatusCode} with content:\r\n{content}");
                     }
                 }
-            } catch (Exception e) when (!options.ThrowOnExceptions) {
-                Debug.WriteLine("Exception occured while written to InfluxDB:\n{0}", e);
+            }
+            catch (Exception e) when (!options.ThrowOnExceptions)
+            {
+                options.ExceptionHandler(e);
             }
         }
 
