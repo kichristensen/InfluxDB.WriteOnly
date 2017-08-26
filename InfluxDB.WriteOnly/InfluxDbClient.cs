@@ -15,32 +15,24 @@ namespace InfluxDB.WriteOnly {
     }
 
     public class InfluxDbClient : IInfluxDbClient {
-        private readonly string username;
-        private readonly string password;
-        private readonly TimeUnitPrecision precision;
-        private readonly bool throwOnException;
+        private readonly InfluxDbClientOptions options;
         private readonly UriBuilder endpoint;
 
-        public Action<HttpWebRequest> RequestConfigurator { get; set; } = request => { };
-
-        public InfluxDbClient(Uri endpoint, string username = null, string password = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond, bool throwOnException = false) {
-            if (username != null && password == null || username == null && password != null) {
+        public InfluxDbClient(Uri endpoint, InfluxDbClientOptions options) {
+            if (options.Username != null && options.Password == null || options.Username == null && options.Password != null) {
                 throw new ArgumentException("When username or password is defined, both must be defined");
             }
 
-            this.username = username;
-            this.password = password;
-            this.precision = precision;
-            this.throwOnException = throwOnException;
+            this.options = options;
             this.endpoint = new UriBuilder(new Uri(endpoint, "write")) { Query = endpoint.Query.TrimStart('?') };
         }
 
         public async Task WriteAsync(string retentionPolicy, string dbName, IEnumerable<Point> points) {
             try {
-                var uri = CreateQueryString(endpoint, username, password, dbName, retentionPolicy).Uri;
-                var formatPoints = points.FormatPoints(precision);
+                var uri = CreateQueryString(endpoint, options.Username, options.Password, dbName, retentionPolicy).Uri;
+                var formatPoints = points.FormatPoints(options.Precision);
                 var request = WebRequest.CreateHttp(uri);
-                RequestConfigurator(request);
+                options.RequestConfigurator(request);
                 request.Method = "POST";
                 using (var stream = new StreamWriter(request.GetRequestStream())) {
                     stream.Write(formatPoints);
@@ -54,7 +46,7 @@ namespace InfluxDB.WriteOnly {
                         throw new HttpRequestException($"Got status code {response.StatusCode} with content:\r\n{content}");
                     }
                 }
-            } catch (Exception e) when (!throwOnException) { 
+            } catch (Exception e) when (!options.ThrowOnExceptions) {
                 Debug.WriteLine("Exception occured while written to InfluxDB:\n{0}", e);
             }
         }
