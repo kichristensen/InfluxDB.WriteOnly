@@ -1,13 +1,18 @@
 using System;
 
-namespace InfluxDB.WriteOnly {
-    public static class DateTimeExtensions {
+namespace InfluxDB.WriteOnly
+{
+    public static class DateTimeExtensions
+    {
         private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-        public static long ToUnixTime(this DateTime dateTime, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond) {
+        public static long ToUnixTime(this DateTime dateTime,
+            TimeUnitPrecision precision = TimeUnitPrecision.Millisecond)
+        {
             var span = dateTime - Epoch;
             double fractionalSpan;
-            switch (precision) {
+            switch (precision)
+            {
                 case TimeUnitPrecision.Millisecond:
                     fractionalSpan = span.TotalMilliseconds;
                     break;

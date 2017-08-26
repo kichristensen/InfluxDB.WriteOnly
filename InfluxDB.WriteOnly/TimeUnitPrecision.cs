@@ -1,16 +1,21 @@
 using System;
 
-namespace InfluxDB.WriteOnly {
-    public enum TimeUnitPrecision {
+namespace InfluxDB.WriteOnly
+{
+    public enum TimeUnitPrecision
+    {
         Millisecond,
         Second,
         Minute,
         Hour
     }
 
-    public static class TimeUnitPrecisionExtentions {
-        public static string ToPrecisionString(this TimeUnitPrecision precision) {
-            switch (precision) {
+    public static class TimeUnitPrecisionExtentions
+    {
+        public static string ToPrecisionString(this TimeUnitPrecision precision)
+        {
+            switch (precision)
+            {
                 case TimeUnitPrecision.Millisecond:
                     return "ms";
                 case TimeUnitPrecision.Second:
