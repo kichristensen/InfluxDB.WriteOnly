@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -23,12 +22,6 @@ namespace InfluxDB.WriteOnly
 
         public InfluxDbClient(Uri endpoint, InfluxDbClientOptions options)
         {
-            if (options.Username != null && options.Password == null ||
-                options.Username == null && options.Password != null)
-            {
-                throw new ArgumentException("When username or password is defined, both must be defined");
-            }
-
             this.options = options;
             this.endpoint = new UriBuilder(new Uri(endpoint, "write")) {Query = endpoint.Query.TrimStart('?')};
         }
@@ -37,7 +30,7 @@ namespace InfluxDB.WriteOnly
         {
             try
             {
-                var uri = CreateQueryString(endpoint, options.Username, options.Password, dbName, retentionPolicy).Uri;
+                var uri = CreateQueryString(endpoint, options.Login, dbName, retentionPolicy).Uri;
                 var formatPoints = points.FormatPoints(options.Precision);
                 var request = WebRequest.CreateHttp(uri);
                 options.RequestConfigurator(request);
@@ -71,7 +64,7 @@ namespace InfluxDB.WriteOnly
             await WriteAsync(null, dbName, points).ConfigureAwait(false);
         }
 
-        private static UriBuilder CreateQueryString(UriBuilder endpoint, string username, string password,
+        private static UriBuilder CreateQueryString(UriBuilder endpoint, LoginInformation login,
             string dbName, string retentionPolicy = null, TimeUnitPrecision precision = TimeUnitPrecision.Millisecond)
         {
             var updatedEndpoint = new UriBuilder(endpoint.Uri);
@@ -83,8 +76,11 @@ namespace InfluxDB.WriteOnly
 
             queryString.Add("precision", precision.ToPrecisionString());
             queryString.Add("db", dbName);
-            queryString.Add("u", username);
-            queryString.Add("p", password);
+            if (login != null)
+            {
+                queryString.Add("u", login.Username);
+                queryString.Add("p", login.Password);
+            }
             updatedEndpoint.Query = queryString.ToString();
             return updatedEndpoint;
         }

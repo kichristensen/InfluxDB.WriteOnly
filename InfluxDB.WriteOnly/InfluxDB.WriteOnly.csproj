@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InfluxDbClientOptions.cs" />
+    <Compile Include="LoginInformation.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="Field.cs" />
