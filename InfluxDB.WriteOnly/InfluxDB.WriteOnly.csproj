@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultLogger.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="InfluxDbClientOptions.cs" />
     <Compile Include="LoginInformation.cs" />
     <Compile Include="Point.cs" />
