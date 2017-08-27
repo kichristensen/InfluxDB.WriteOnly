@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -15,6 +16,7 @@ namespace InfluxDB.WriteOnly
         Task WriteAsync(string dbName, IEnumerable<Point> points);
     }
 
+    [DebuggerDisplay("Endpoint = {" + nameof(endpoint) + "}")]
     public class InfluxDbClient : IInfluxDbClient
     {
         private readonly InfluxDbClientOptions options;
