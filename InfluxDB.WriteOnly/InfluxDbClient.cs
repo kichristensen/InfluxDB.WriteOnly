@@ -31,7 +31,10 @@ namespace InfluxDB.WriteOnly
             try
             {
                 var uri = CreateQueryString(endpoint, options.Login, dbName, retentionPolicy).Uri;
+                options.Logger.Debug($"Using uri: {uri}");
                 var formatPoints = points.FormatPoints(options.Precision);
+                options.Logger.Trace($"Formatted points:\n{points}");
+                options.Logger.Debug("Sending request...");
                 var request = WebRequest.CreateHttp(uri);
                 options.RequestConfigurator(request);
                 request.Method = "POST";
@@ -43,6 +46,7 @@ namespace InfluxDB.WriteOnly
                 {
                     if (response.StatusCode != HttpStatusCode.NoContent)
                     {
+                        options.Logger.Error($"Got response with error code {response.StatusCode}");
                         string content;
                         using (var stream = new StreamReader(response.GetResponseStream()))
                         {
@@ -51,6 +55,8 @@ namespace InfluxDB.WriteOnly
                         throw new HttpRequestException(
                             $"Got status code {response.StatusCode} with content:\r\n{content}");
                     }
+
+                    options.Logger.Debug("Request sent");
                 }
             }
             catch (Exception e) when (!options.ThrowOnExceptions)
