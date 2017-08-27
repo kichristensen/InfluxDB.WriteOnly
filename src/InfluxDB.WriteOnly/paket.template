@@ -1,0 +1,21 @@
+type project
+owners
+    Kim Christensen
+authors 
+    Kim Christensen
+projectUrl
+    http://github.com/kichristensen/InfluxDB.WriteOnly
+iconUrl
+    https://raw.githubusercontent.com/mvno/Okanshi/master/docs/files/img/logo.png
+licenseUrl
+    https://github.com/kichristensen/InfluxDB.WriteOnly/blob/master/LICENSE
+requireLicenseAcceptance
+    false
+copyright
+    Copyright 2017
+tags
+    influxdb
+summary
+    Write only client for InfluxDB
+description
+    Write only client for InfluxDB
