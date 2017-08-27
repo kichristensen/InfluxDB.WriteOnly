@@ -35,7 +35,7 @@ namespace InfluxDB.WriteOnly
 
         private static string FormatMessage(string logLevel, string message)
         {
-            return $"${DateTime.Now:g}\t${logLevel}: ${message}";
+            return $"{DateTime.Now:g}\t{logLevel}: {message}";
         }
     }
 }
