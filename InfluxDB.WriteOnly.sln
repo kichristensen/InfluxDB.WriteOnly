@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.WriteOnly", "src\InfluxDB.WriteOnly\InfluxDB.WriteOnly.csproj", "{C6CC7436-6524-49E7-887B-4B91816E4F18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.WriteOnly.Tests", "tests\InfluxDB.WriteOnly.Tests\InfluxDB.WriteOnly.Tests.csproj", "{350545A9-E929-41BA-A7B8-A463E5715B81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{C6CC7436-6524-49E7-887B-4B91816E4F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6CC7436-6524-49E7-887B-4B91816E4F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6CC7436-6524-49E7-887B-4B91816E4F18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350545A9-E929-41BA-A7B8-A463E5715B81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350545A9-E929-41BA-A7B8-A463E5715B81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350545A9-E929-41BA-A7B8-A463E5715B81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350545A9-E929-41BA-A7B8-A463E5715B81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A4E707A9-0171-42FB-AD77-F8145CDF472C}
 	EndGlobalSection
 EndGlobal

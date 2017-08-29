@@ -1,11 +1,14 @@
 #r @"packages/build/FAKE/tools/FakeLib.dll"
 open Fake
 open Fake.AssemblyInfoFile
+open Fake.Testing
 
 let project = "InfluxDB.WriteOnly"
 let summary = "Write-only client for InfluxDB"
 
 let newVersion = getBuildParam "newVersion"
+
+let testAssemblies = "tests/**/bin/Release/*Tests*.dll"
 
 let isRelease = newVersion <> ""
 
@@ -90,15 +93,23 @@ Target "PublishNuGet" (fun _ ->
             WorkingDir = "bin" })
 )
 
+Target "RunTests" (fun _ ->
+    !! testAssemblies
+    |> xUnit2 id
+)
+
 Target "Release" DoNothing
 
 Target "All" DoNothing
+
+Target "BuildPackage" DoNothing
 
 "Clean"
 =?> ("Promote Unreleased to new version", isRelease)
 =?> ("AssemblyInfo", isRelease)
 ==> "Build"
 ==> "CopyBinaries"
+==> "RunTests"
 ==> "All"
 
 "All"
