@@ -14,8 +14,6 @@ let isRelease = newVersion <> ""
 
 let changeLogFile = "CHANGELOG.md"
 
-let changeLog = changeLogFile |> ChangeLogHelper.LoadChangeLog
-
 Target "AssemblyInfo" (fun _ ->
     let changeLog =
         changeLogFile
@@ -67,7 +65,6 @@ Target "Help" (fun _ ->
 )
 
 Target "NuGet" (fun _ ->
-    let changeLog = changeLogFile |> ChangeLogHelper.LoadChangeLog
     DotNetCli.Pack
         (fun p ->
             { p with
@@ -87,6 +84,14 @@ Target "RunTests" (fun _ ->
         (fun p ->
             { p  with
                 WorkingDir = "tests/InfluxDB.WriteOnly.Tests" })
+)
+
+Target "UpdateAppVeyorVersion" (fun _ ->
+    let changeLog = changeLogFile |> ChangeLogHelper.LoadChangeLog
+    "appveyor.yml"
+    |> RegexReplaceInFileWithEncoding @"version: .*"
+                                      (sprintf "version: %O.{build}" changeLog.LatestEntry.SemVer)
+                                      System.Text.Encoding.UTF8
 )
 
 Target "Release" DoNothing
@@ -110,6 +115,7 @@ Target "BuildPackage" DoNothing
 
 "BuildPackage"
 ==> "PublishNuGet"
+==> "UpdateAppVeyorVersion"
 ==> "Release"
 
 RunTargetOrDefault "All"
