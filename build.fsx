@@ -31,6 +31,15 @@ Target "Clean" (fun _ ->
     CleanDirs [ "bin" ]
 )
 
+Target "Restore" (fun _ ->
+    !! "src/**/*.??proj"
+    ++ "tests/**/*.??proj"
+    |> Seq.iter (fun d ->
+        DotNetCli.Restore (fun p ->
+            { p with
+                Project = d }))
+)
+
 Target "Build" (fun _ ->
     !! "InfluxDB.WriteOnly.sln"
     |> MSBuildRelease "" "Rebuild"
@@ -89,6 +98,7 @@ Target "BuildPackage" DoNothing
 "Clean"
 =?> ("Promote Unreleased to new version", isRelease)
 =?> ("AssemblyInfo", isRelease)
+==> "Restore"
 ==> "Build"
 ==> "CopyBinaries"
 ==> "RunTests"
