@@ -21,31 +21,10 @@ Target "AssemblyInfo" (fun _ ->
         changeLogFile
         |> ChangeLogHelper.LoadChangeLog
 
-    let getAssemblyInfoAttributes projectName =
-        [ Attribute.Title (projectName)
-          Attribute.Product project
-          Attribute.Description summary
-          Attribute.FileVersion changeLog.LatestEntry.AssemblyVersion
-          Attribute.Version ((string changeLog.LatestEntry.SemVer.Major) + ".0.0")
-          Attribute.InformationalVersion changeLog.LatestEntry.AssemblyVersion ]
-
-    let getProjectDetails projectPath =
-        let projectName = System.IO.Path.GetFileNameWithoutExtension(projectPath)
-        ( projectPath, 
-          projectName,
-          System.IO.Path.GetDirectoryName(projectPath),
-          (getAssemblyInfoAttributes projectName)
-        )
-
-    !! "src/**/*.??proj"
-    |> Seq.map getProjectDetails
-    |> Seq.iter (fun (projFileName, projectName, folderName, attributes) ->
-        match projFileName with
-        | Fsproj -> CreateFSharpAssemblyInfo (folderName @@ "AssemblyInfo.fs") attributes
-        | Csproj -> CreateCSharpAssemblyInfo ((folderName @@ "Properties") @@ "AssemblyInfo.cs") attributes
-        | Vbproj -> CreateVisualBasicAssemblyInfo ((folderName @@ "My Project") @@ "AssemblyInfo.vb") attributes
-        | _ -> failwithf "Unsupported proj file: %s" projFileName
-        )
+    "src/InfluxDB.WriteOnly/InfluxDB.WriteOnly.csproj"
+    |> RegexReplaceInFileWithEncoding @"\<VersionPrefix\>.*\</VersionPrefix>"
+                                      (sprintf "<VersionPrefix>%O</VersionPrefix>" changeLog.LatestEntry.SemVer)
+                                      System.Text.Encoding.UTF8
 )
 
 Target "Clean" (fun _ ->
@@ -80,11 +59,12 @@ Target "Help" (fun _ ->
 
 Target "NuGet" (fun _ ->
     let changeLog = changeLogFile |> ChangeLogHelper.LoadChangeLog
-    Paket.Pack(fun p ->
-        { p with
-            OutputPath = "bin"
-            Version = changeLog.LatestEntry.NuGetVersion
-            Symbols = true })
+    DotNetCli.Pack
+        (fun p ->
+            { p with
+                WorkingDir = "src/InfluxDB.WriteOnly";
+                OutputPath = "../../bin";
+                AdditionalArgs = [ "--include-symbols" ] })
 )
 
 Target "PublishNuGet" (fun _ ->
@@ -94,8 +74,10 @@ Target "PublishNuGet" (fun _ ->
 )
 
 Target "RunTests" (fun _ ->
-    !! testAssemblies
-    |> xUnit2 id
+    DotNetCli.Test
+        (fun p ->
+            { p  with
+                WorkingDir = "tests/InfluxDB.WriteOnly.Tests" })
 )
 
 Target "Release" DoNothing
