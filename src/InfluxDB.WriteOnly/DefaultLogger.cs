@@ -26,10 +26,11 @@ namespace InfluxDB.WriteOnly
             Console.ResetColor();
         }
 
-        public void Error(string message)
+        public void Error(string message, Exception e)
         {
+            var exceptionString = e != null ? $"\n{e.ToString()}" : String.Empty;
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(FormatMessage("ERROR", message));
+            Console.Error.WriteLine($"{FormatMessage("ERROR", message)}{e}");
             Console.ResetColor();
         }
 

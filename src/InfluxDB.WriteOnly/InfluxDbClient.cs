@@ -48,7 +48,7 @@ namespace InfluxDB.WriteOnly
                 {
                     if (response.StatusCode != HttpStatusCode.NoContent)
                     {
-                        options.Logger.Error($"Got response with error code {response.StatusCode}");
+                        options.Logger.Error($"Got response with error code {response.StatusCode}", null);
                         string content;
                         using (var stream = new StreamReader(response.GetResponseStream()))
                         {
@@ -63,7 +63,7 @@ namespace InfluxDB.WriteOnly
             }
             catch (Exception e) when (!options.ThrowOnExceptions)
             {
-                options.Logger.Error($"Got exception while sending request to InfluxDB:\n{e}");
+                options.Logger.Error($"Got exception while sending request to InfluxDB:\n{e}", null);
             }
         }
 

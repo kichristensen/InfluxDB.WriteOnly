@@ -1,3 +1,5 @@
+using System;
+
 namespace InfluxDB.WriteOnly
 {
     public interface ILogger
@@ -6,6 +8,6 @@ namespace InfluxDB.WriteOnly
         void Debug(string message);
         void Info(string message);
         void Warning(string message);
-        void Error(string message);
+        void Error(string message, Exception e);
     }
 }

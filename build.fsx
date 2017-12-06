@@ -39,9 +39,11 @@ Target "Restore" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    !! "InfluxDB.WriteOnly.sln"
-    |> MSBuildRelease "" "Rebuild"
-    |> ignore
+    DotNetCli.Build
+        (fun p ->
+            { p with
+                Configuration = "Release"
+                AdditionalArgs = [ "--no-incremental" ] })
 )
 
 Target "CopyBinaries" (fun _ ->
