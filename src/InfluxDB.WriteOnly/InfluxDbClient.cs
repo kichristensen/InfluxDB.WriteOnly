@@ -63,7 +63,7 @@ namespace InfluxDB.WriteOnly
             }
             catch (Exception e) when (!options.ThrowOnExceptions)
             {
-                options.Logger.Error($"Got exception while sending request to InfluxDB:\n{e}", null);
+                options.Logger.Error($"Got exception while sending request to InfluxDB", e);
             }
         }
 
