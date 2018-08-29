@@ -30,11 +30,12 @@ namespace InfluxDB.WriteOnly
 
         public async Task WriteAsync(string retentionPolicy, string dbName, IEnumerable<Point> points)
         {
+            var requestBody = "";
             try
             {
                 var uri = CreateQueryString(endpoint, options.Login, dbName, retentionPolicy).Uri;
                 options.Logger.Debug($"Using uri: {uri}");
-                var formatPoints = points.FormatPoints(options.Precision);
+                requestBody = points.FormatPoints(options.Precision);
                 options.Logger.Trace($"Formatted points:\n{points}");
                 options.Logger.Debug("Sending request...");
                 var request = WebRequest.CreateHttp(uri);
@@ -42,7 +43,7 @@ namespace InfluxDB.WriteOnly
                 request.Method = "POST";
                 using (var stream = new StreamWriter(request.GetRequestStream()))
                 {
-                    stream.Write(formatPoints);
+                    stream.Write(requestBody);
                 }
                 using (var response = (HttpWebResponse) await request.GetResponseAsync().ConfigureAwait(false))
                 {
@@ -63,7 +64,7 @@ namespace InfluxDB.WriteOnly
             }
             catch (Exception e) when (!options.ThrowOnExceptions)
             {
-                options.Logger.Error($"Got exception while sending request to InfluxDB", e);
+                options.Logger.Error($"Got exception while sending request to InfluxDB.\r\nRequest body: {requestBody}", e);
             }
         }
 
