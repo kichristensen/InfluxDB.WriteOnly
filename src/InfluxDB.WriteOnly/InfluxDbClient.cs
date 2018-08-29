@@ -36,7 +36,7 @@ namespace InfluxDB.WriteOnly
                 var uri = CreateQueryString(endpoint, options.Login, dbName, retentionPolicy).Uri;
                 options.Logger.Debug($"Using uri: {uri}");
                 requestBody = points.FormatPoints(options.Precision);
-                options.Logger.Trace($"Formatted points:\n{points}");
+                options.Logger.Trace($"Formatted request body:\n{requestBody}");
                 options.Logger.Debug("Sending request...");
                 var request = WebRequest.CreateHttp(uri);
                 options.RequestConfigurator(request);
