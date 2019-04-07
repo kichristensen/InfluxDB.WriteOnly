@@ -15,6 +15,12 @@ namespace InfluxDB.WriteOnly
             this.Value = value;
         }
 
+        public Field(string key, double value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
         public Field(string key, int value)
         {
             this.Key = key;
@@ -39,14 +45,38 @@ namespace InfluxDB.WriteOnly
             this.Value = value;
         }
 
+        public Field(string key, ulong value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
+        public Field(string key, uint value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
+        public Field(string key, short value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
+        public Field(string key, ushort value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
         public override string ToString()
         {
-            if (Value is float)
+            if (Value is float || Value is double)
             {
                 return string.Format(Culture, "{0}={1}", PointFormatter.Escape(Key), Value);
             }
 
-            if (Value is int || Value is long)
+            if (Value is int || Value is long || Value is ulong || Value is uint || Value is short || Value is ushort)
             {
                 return string.Format(Culture, "{0}={1}i", PointFormatter.Escape(Key), Value);
             }

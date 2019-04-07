@@ -19,6 +19,18 @@ namespace InfluxDB.WriteOnly.Tests
         }
 
         [Fact]
+        public void ADoubleFieldsStringRepresentationFollowsLineProtocolSpecification()
+        {
+            const double value = 10.4d;
+            const string key = "double";
+            var field = new Field(key, value);
+
+            var s = field.ToString();
+
+            s.Should().Be($"{key}={value.ToString(CultureInfo.InvariantCulture)}");
+        }
+
+        [Fact]
         public void AIntegerFieldsStringRepresentationFollowsLineProtocolSpecification()
         {
             const int value = 67;
@@ -35,6 +47,54 @@ namespace InfluxDB.WriteOnly.Tests
         {
             const long value = 123;
             const string key = "long";
+            var field = new Field(key, value);
+
+            var s = field.ToString();
+
+            s.Should().Be($"{key}={value}i");
+        }
+
+        [Fact]
+        public void AULongFieldsStringRepresentationFollowsLineProtocolSpecification()
+        {
+            const ulong value = 123;
+            const string key = "ulong";
+            var field = new Field(key, value);
+
+            var s = field.ToString();
+
+            s.Should().Be($"{key}={value}i");
+        }
+
+        [Fact]
+        public void AUIntFieldsStringRepresentationFollowsLineProtocolSpecification()
+        {
+            const uint value = 123;
+            const string key = "uint";
+            var field = new Field(key, value);
+
+            var s = field.ToString();
+
+            s.Should().Be($"{key}={value}i");
+        }
+
+        [Fact]
+        public void AShortFieldsStringRepresentationFollowsLineProtocolSpecification()
+        {
+            const short value = 123;
+            const string key = "short";
+            var field = new Field(key, value);
+
+            var s = field.ToString();
+
+            s.Should().Be($"{key}={value}i");
+        }
+
+        [Fact]
+        public void AUShortFieldsStringRepresentationFollowsLineProtocolSpecification()
+        {
+            const ushort value = 123;
+            const string key = "ushort";
             var field = new Field(key, value);
 
             var s = field.ToString();
